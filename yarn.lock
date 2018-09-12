@@ -4575,6 +4575,10 @@ lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
+lodash@^4.17.11:
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
+
 log-symbols@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/log-symbols/-/log-symbols-1.0.2.tgz#376ff7b58ea3086a0f09facc74617eca501e1a18"
@@ -7066,6 +7070,12 @@ tslint-config-prettier@^1.14.0:
 tslint-plugin-blank-line@^0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/tslint-plugin-blank-line/-/tslint-plugin-blank-line-0.0.8.tgz#be606810d455bd9e8e4198331b2bb3440d43f56f"
+  dependencies:
+    "@types/node" "^8.0.28"
+
+tslint-plugin-blank-line@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/tslint-plugin-blank-line/-/tslint-plugin-blank-line-0.0.9.tgz#926b8933c34f3fd359f3d59dc965ac5eee752faa"
   dependencies:
     "@types/node" "^8.0.28"
 
