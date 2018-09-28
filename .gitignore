@@ -93,6 +93,10 @@ typings/
 public
 lib
 
+# End of https://www.gitignore.io/api/node,macos,vscode
+
+package-lock.json
+
 # Files managed by operational-scripts
 tslint.json
 tsconfig.json
