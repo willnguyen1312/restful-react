@@ -55,7 +55,7 @@
     "nock": "^10.0.0",
     "prettier": "^1.13.5",
     "react-dom": "^16.4.2",
-    "react-testing-library": "^5.0.0",
+    "react-testing-library": "^5.1.1",
     "ts-jest": "^23.1.4",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
