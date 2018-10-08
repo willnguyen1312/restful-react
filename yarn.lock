@@ -612,9 +612,9 @@ atob@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
-auto-changelog@^1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/auto-changelog/-/auto-changelog-1.8.0.tgz#6312c93a007551e6eea8f28d05bd5efb3d88ea18"
+auto-changelog@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/auto-changelog/-/auto-changelog-1.8.1.tgz#23c2e1dc5b0fb3a4c9bc6783b7e2f14407fcd97d"
   dependencies:
     babel-polyfill "^6.26.0"
     commander "^2.9.0"
