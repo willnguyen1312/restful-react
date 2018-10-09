@@ -52,7 +52,7 @@ export interface MutateCommonProps {
   localErrorOnly?: boolean;
 }
 
-export interface MutateWithDeleteProps<TData, TError> extends MutateCommonProps {
+export interface MutateWithDeleteProps<TData, TError, TBody> extends MutateCommonProps {
   verb: "DELETE";
   /**
    * A function that recieves a mutation function, along with
@@ -61,13 +61,13 @@ export interface MutateWithDeleteProps<TData, TError> extends MutateCommonProps 
    * @param actions - a key/value map of HTTP verbs, aliasing destroy to DELETE.
    */
   children: (
-    mutate: (resourceId?: string | {}) => Promise<TData>,
+    mutate: (resourceId?: string | TBody) => Promise<TData>,
     states: States<TData, TError>,
     meta: Meta,
   ) => React.ReactNode;
 }
 
-export interface MutateWithOtherVerbProps<TData, TError> extends MutateCommonProps {
+export interface MutateWithOtherVerbProps<TData, TError, TBody> extends MutateCommonProps {
   verb: "POST" | "PUT" | "PATCH";
   /**
    * A function that recieves a mutation function, along with
@@ -76,13 +76,15 @@ export interface MutateWithOtherVerbProps<TData, TError> extends MutateCommonPro
    * @param actions - a key/value map of HTTP verbs, aliasing destroy to DELETE.
    */
   children: (
-    mutate: (body?: string | {}) => Promise<TData>,
+    mutate: (body?: string | TBody) => Promise<TData>,
     states: States<TData, TError>,
     meta: Meta,
   ) => React.ReactNode;
 }
 
-export type MutateProps<TData, TError> = MutateWithDeleteProps<TData, TError> | MutateWithOtherVerbProps<TData, TError>;
+export type MutateProps<TData, TError, TBody> =
+  | MutateWithDeleteProps<TData, TError, TBody>
+  | MutateWithOtherVerbProps<TData, TError, TBody>;
 
 /**
  * State for the <Mutate /> component. These
@@ -100,8 +102,8 @@ export interface MutateState<TData, TError> {
  * is a named class because it is useful in
  * debugging.
  */
-class ContextlessMutate<TData, TError> extends React.Component<
-  MutateProps<TData, TError> & InjectedProps,
+class ContextlessMutate<TData, TError, TBody> extends React.Component<
+  MutateProps<TData, TError, TBody> & InjectedProps,
   MutateState<TData, TError>
 > {
   public readonly state: Readonly<MutateState<TData, TError>> = {
@@ -110,14 +112,14 @@ class ContextlessMutate<TData, TError> extends React.Component<
     error: null,
   };
 
-  public mutate = async (body?: string | {}, mutateRequestOptions?: RequestInit) => {
+  public mutate = async (body?: string | TBody, mutateRequestOptions?: RequestInit) => {
     const { base, path, verb, requestOptions: providerRequestOptions } = this.props;
     this.setState(() => ({ error: null, loading: true }));
 
     const requestPath = verb === "DELETE" ? `${base}${path || ""}${body ? "/" + body : ""}` : `${base}${path || ""}`;
     const request = new Request(requestPath, {
       method: verb,
-      body: typeof body === "object" ? JSON.stringify(body) : body,
+      body: typeof body === "object" ? JSON.stringify(body) : (body as any), // Regarding the type definition, this should be a ReadableStream, this is not true
       ...(typeof providerRequestOptions === "function" ? providerRequestOptions() : providerRequestOptions),
       ...mutateRequestOptions,
       headers: {
@@ -168,12 +170,12 @@ class ContextlessMutate<TData, TError> extends React.Component<
  * in order to provide new `base` props that contain
  * a segment of the path, creating composable URLs.
  */
-function Mutate<TError = any, TData = any>(props: MutateProps<TData, TError>) {
+function Mutate<TError = any, TData = any, TBody = any>(props: MutateProps<TData, TError, TBody>) {
   return (
     <RestfulReactConsumer>
       {contextProps => (
         <RestfulReactProvider {...contextProps} base={`${contextProps.base}${props.path}`}>
-          <ContextlessMutate<TData, TError> {...contextProps} {...props} />
+          <ContextlessMutate<TData, TError, TBody> {...contextProps} {...props} />
         </RestfulReactProvider>
       )}
     </RestfulReactConsumer>
