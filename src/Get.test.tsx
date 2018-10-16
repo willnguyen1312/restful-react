@@ -293,6 +293,11 @@ describe("Get", () => {
 
   describe("with wait", () => {
     it("should render nothing if until we have data", async () => {
+      nock("https://my-awesome-api.fake")
+        .get("/")
+        .delay(20000)
+        .reply(200, { hello: "world" });
+
       const children = jest.fn();
       children.mockReturnValue(<div />);
 
@@ -536,6 +541,27 @@ describe("Get", () => {
       );
 
       expect(apiCalls).toEqual(10);
+    });
+  });
+
+  describe("with advanced resolvers", () => {
+    it("allows the resolver to throw a runtime error", async () => {
+      nock("https://my-awesome-api.fake")
+        .get("/")
+        .reply(200, { a: "b" });
+
+      const children = jest.fn();
+      children.mockReturnValue(<div />);
+
+      render(
+        <RestfulProvider base="https://my-awesome-api.fake">
+          <Get path="" resolve={res => res.a.b.c.d.e.f}>
+            {children}
+          </Get>
+        </RestfulProvider>,
+      );
+
+      await wait(() => expect(children.mock.calls.length).toBe(1));
     });
   });
 });

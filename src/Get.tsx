@@ -9,7 +9,7 @@ import { processResponse } from "./util/processResponse";
  * A function that resolves returned data from
  * a fetch call.
  */
-export type ResolveFunction<T> = (data: any) => T;
+export type ResolveFunction<T> = ((data: any) => T) | ((data: any) => Promise<T>);
 
 export interface GetDataError<TError> {
   message: string;
@@ -225,7 +225,27 @@ class ContextlessGet<TData, TError> extends React.Component<
       return null;
     }
 
-    this.setState({ loading: false, data: resolve!(data) });
+    let resolvedData: TData | null = null;
+    let resolveError: GetDataError<TError> | null = null;
+
+    try {
+      if (resolve) {
+        const resolvedDataOrPromise: TData | Promise<TData> = resolve(data);
+        resolvedData = (resolvedDataOrPromise as { then?: any }).then
+          ? ((await resolvedDataOrPromise) as TData)
+          : (resolvedDataOrPromise as TData);
+      } else {
+        resolvedData = data;
+      }
+    } catch (err) {
+      resolvedData = null;
+      resolveError = {
+        message: "RESOLVE_ERROR",
+        data: JSON.stringify(err),
+      };
+    }
+
+    this.setState({ loading: false, data: resolvedData, error: resolveError });
     return data;
   };
 
